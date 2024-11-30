@@ -1,3 +1,5 @@
+setuptools>=67.0.0
+wheel>=0.40.0
 Pillow==9.3.0
 opencv-python==4.8.0.74
 pytesseract==0.3.10
