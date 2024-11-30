@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Image to Text</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 5s forwards;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            flex: 1;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        label:hover {
+            background-color: #2980b9;
+        }
+
+        .btn {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #27ae60;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 1s forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .bottom-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Pacifico', cursive;
+            font-size: 14px;
+            text-align: right;
+            color: #555;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OCR Image to Text</h1>
+
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            <label for="photoInput" id="labelForInput">Choose an Image</label>
+            <input type="file" name="photo" id="photoInput" accept="image/*">
+            <input class="btn" type="submit" value="Extract Text">
+        </form>
+
+        <div style="display: flex; justify-content: center;">
+            <img id="imagePreview" alt="Image Preview">
+        </div>
+
+        {% if extracted_text %}
+            <h3>Extracted Text:</h3>
+            <pre>{{ extracted_text }}</pre>
+        {% endif %}
+
+        <div class="bottom-info">
+            <p>Submitted by: Paranjoy Bordoloi</p>
+            <p>Submitted to: Mahesh Arse</p>
+            <p>Topic: Web app based on Python that converts images into text</p>
+        </div>
+    </div>
+
+    <!-- Loading screen with spinner -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        // Handle file input change
+        const photoInput = document.getElementById('photoInput');
+        const labelForInput = document.getElementById('labelForInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        photoInput.addEventListener('change', function() {
+            const file = photoInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block'; // Display the image
+                };
+                reader.readAsDataURL(file);
+
+                // Change label to "Image Chosen"
+                labelForInput.textContent = 'Image Chosen';
+            }
+        });
+
+        // Display the loading screen during the image upload
+        document.getElementById('uploadForm').addEventListener('submit', function () {
+            document.getElementById('loadingScreen').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
